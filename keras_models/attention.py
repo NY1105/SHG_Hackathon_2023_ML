@@ -1,4 +1,4 @@
-from keras.engine.topology import Layer
+from keras.layers import Layer
 from keras import initializers
 from keras import backend as K
 from keras import constraints

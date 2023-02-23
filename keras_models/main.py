@@ -12,8 +12,9 @@ from keras.layers import Dense
 from keras.layers import Flatten
 from keras.layers.convolutional import Conv1D, Conv2D
 from keras.layers.convolutional import MaxPooling1D
-from keras.layers.embeddings import Embedding
+from keras.layers import Embedding
 from keras.preprocessing import sequence
+from keras.utils import pad_sequences
 from keras.losses import categorical_crossentropy
 import matplotlib.pyplot as plt
 from keras.preprocessing.text import Tokenizer
@@ -135,7 +136,7 @@ class Preprocessing:
         # perform Bag of Words
         print("AFTER Pruning:")
         data_max_seq_length = self.get_statistics(encoded_docs, labels, attribute) # can be used to replace MAX_SEQ_LENGTH
-        self.X = sequence.pad_sequences(encoded_docs, maxlen=config.MAX_SEQ_LENGTH) # use either a fixed max-length or the real max-length from data
+        self.X = pad_sequences(encoded_docs, maxlen=config.MAX_SEQ_LENGTH) # use either a fixed max-length or the real max-length from data
         
         # for use with categorical_crossentropy
         self.Y = labels

@@ -1,22 +1,21 @@
 # variables NOT for optimizing
 # FILENAME = 'final_annotation_cnn.csv'
-FILENAME = 'data.csv' # essays dataset
-FILENAME = '0831.csv'
+FILENAME = './data/Essays/essays2007.csv' # essays dataset
 PATH_EMBEDDING = '../fast-text/corpus.friends+nyt+wiki+amazon.fasttext.skip.d100.bin'
 dims = ['cAGR', 'cCON', 'cEXT', 'cOPN', 'cNEU']
-column_to_read = ['text', 'single_text'][1]
-validation_mode = [0,1][1] # 0 for splitting; 1 for 10-fold CV
-multilabel = False # False means multi class
+column_to_read = ['text', 'single_text'][0]
+validation_mode = [0,1][0] # 0 for splitting; 1 for 10-fold CV
+multilabel = True # False means multi class
 ''' 
 models = MLP, textCNN, CNN, BLSTM, ABLSTM, ABCNN
 '''
-ModelName = 'ABCNN'
+ModelName = 'BLSTM'
 
 MAX_NUM_WORDS = 10000 # truncated vocab_size
 MAX_SEQ_LENGTH = 400 
 MAX_SENTS = 30
 EMBEDDING_DIM = 100
-ClassNum = 2
+ClassNum = 5
 
 
 class Params:

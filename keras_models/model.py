@@ -1,19 +1,17 @@
-import keras
+from tensorflow import keras
 import glob, os, sys, re, pickle
 import pandas as pd 
 import numpy as np
 from keras.models import Sequential, Model
 from keras.layers import Dense, Flatten, TimeDistributed
-from keras.layers import Dropout, Activation , LSTM, Bidirectional, GRU
+from keras.layers import Dropout, Activation , LSTM, Bidirectional, GRU, Embedding, Concatenate
 from keras.layers.convolutional import Conv1D, Conv2D, MaxPooling1D
-from keras.layers.embeddings import Embedding
 from keras.losses import categorical_crossentropy
 from keras.callbacks import ModelCheckpoint
 from keras.optimizers import SGD, Adam
 from collections import Counter
 import configuration as config
 from keras.layers import Input, BatchNormalization
-from keras.layers.merge import concatenate
 
 from attention import AttLayer
 
@@ -110,7 +108,7 @@ class DeepModel:
         if (len(conv_feature_list) == 1):
             out =  conv_feature_list[0]
         else:
-            out = concatenate(conv_feature_list, axis=1)
+            out = Concatenate(conv_feature_list, axis=1)
         # network = Model(inputs=cnn_inp, outputs=out)
         
         X = TimeDistributed(Dense(len(paramsObj.filter_size)*paramsObj.pool_size[0]), name='DenseTimeDistributed')(out)
@@ -195,7 +193,7 @@ class DeepModel:
 
 
         if(len(paramsObj.filter_size)>1):
-            X = concatenate(conv_att_features, axis=1)
+            X = Concatenate(conv_att_features, axis=1)
         else:
             X = conv_att_features[0]
 
@@ -439,7 +437,7 @@ class DeepModel:
         if (len(conv_feature_list) == 1):
             out =  conv_feature_list[0] 
         else:
-            out = concatenate(conv_feature_list, axis=-1)
+            out = Concatenate(conv_feature_list, axis=-1)
         network = Model(inputs=inp, outputs=out)
         model.add(network)
        

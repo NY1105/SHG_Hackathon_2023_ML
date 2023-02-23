@@ -1,3 +1,4 @@
-/venv
-/.vscode
-/huggingface
+**/venv
+**/.vscode
+**/huggingface
+**/__pycache__
