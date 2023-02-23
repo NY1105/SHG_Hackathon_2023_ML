@@ -225,7 +225,7 @@ def train_cross_validation(attribute, ModelName):
 
         # save the best model & history
         # filepath="weights.best.hdf5"
-        # checkpoint = ModelCheckpoint(filepath, monitor='val_acc', verbose=1, save_best_only=True, mode='max')
+        # checkpoint = ModelCheckpoint(filepath, monitor='val_accuracy', verbose=1, save_best_only=True, mode='max')
         history = History()
         callbacks_list = [history]
 
@@ -241,10 +241,10 @@ def train_cross_validation(attribute, ModelName):
         ct = Counter(preprocessObj.Y)
         print("working on =={}==".format(attribute))
         print("----%s: %d----" % (preprocessObj.attribute, count_iter))
-        print("----highest evaluation accuracy is %f" % (100*max(history.history['val_acc'])))
+        print("----highest evaluation accuracy is %f" % (100*max(history.history['val_accuracy'])))
         print("----dominant distribution in data is %f" % max([ct[k]*100/float(preprocessObj.Y.shape[0]) for k in ct]))
-        cv_acc.append(max(history.history['val_acc']))
-        cv_records.append(history.history['val_acc'])
+        cv_acc.append(max(history.history['val_accuracy']))
+        cv_records.append(history.history['val_accuracy'])
         count_iter += 1
     
     outName = attribute+".res"
@@ -284,7 +284,7 @@ def train_splitting(attribute, ModelName):
 
     # save the best model & history
     filepath="./checkpoint/{}_weights.hdf5".format(preprocessObj.attribute)
-    checkpoint = ModelCheckpoint(filepath, monitor='val_acc', verbose=1, save_best_only=True, mode='max')
+    checkpoint = ModelCheckpoint(filepath, monitor='val_accuracyuracy', verbose=1, save_best_only=False, mode='max')
     # checkpoint = ModelCheckpoint(filepath, monitor='val_loss', verbose=1, save_best_only=True, mode='max')
     history = History()
     callbacks_list = [history, checkpoint]
@@ -300,7 +300,7 @@ def train_splitting(attribute, ModelName):
 
         dev = np.append(dev,test)
         # predict dev set
-        out = model.predict_proba(preprocessObj.X[dev])
+        out = model.predict(preprocessObj.X[dev])
         out = np.array(out)
 
         # find the best threshold
@@ -336,7 +336,7 @@ def train_splitting(attribute, ModelName):
                 verbose=2, 
                 callbacks=callbacks_list)
 
-        print("----highest evaluation accuracy is %f" % (100*max(history.history['val_acc'])))
+        print("----highest evaluation accuracy is %f" % (100*max(history.history['val_accuracy'])))
     
         # choose the best model
         best_model = load_model(filepath, custom_objects={'AttLayer': AttLayer})

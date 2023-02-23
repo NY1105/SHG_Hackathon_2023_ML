@@ -22,6 +22,7 @@ class DeepModel:
                     'MLP': self.build_MLP,
                     'textCNN': self.build_textCNN,
                     'BLSTM': self.build_BLSTM,
+                    'BLSTM2': self.build_BLSTM2,
                     'CNN': self.build_LeNet5,
                     'C-LSTM': self.build_CLSTM,
                     'BiGRU': self.build_BiGRU,
@@ -318,7 +319,37 @@ class DeepModel:
         #             kernel_initializer='uniform', activation='softmax'))
         model.add(Dropout(paramsObj.dropout_rate))
         model.add(Dense(config.ClassNum, activation='sigmoid'))
-        adam = Adam(lr=0.0001, decay=1e-5)
+        adam = Adam(learning_rate=0.0001, decay=1e-5)
+        model.compile(loss='binary_crossentropy',optimizer=adam,metrics=['accuracy'])
+
+        return model
+
+    def build_BLSTM2(self, paramsObj, weight=[]):
+
+        model = Sequential()
+
+        # Embeddings
+        if len(weight) == 0 or paramsObj.use_word_embedding == False:
+            # which vocab size to use word_index or max_vocab+1 ???
+            model.add(Embedding(config.MAX_NUM_WORDS,config.EMBEDDING_DIM,input_length=config.MAX_SEQ_LENGTH))
+        else:
+            model.add(Embedding(
+                config.MAX_NUM_WORDS,
+                config.EMBEDDING_DIM,
+                weights=[weight],
+                input_length=config.MAX_SEQ_LENGTH,
+                trainable=paramsObj.train_embedding))
+
+        # model.add(Bidirectional(LSTM(64,return_sequences=True),merge_mode=paramsObj.merge_mode))
+        # model.add(Dropout(paramsObj.dropout_rate))
+        # model.add(Bidirectional(LSTM(128,return_sequences=True),merge_mode=paramsObj.merge_mode))
+        # model.add(Dropout(paramsObj.dropout_rate))
+        model.add(Bidirectional(LSTM(128)))
+        # model.add(Dense(paramsObj.dense_layer_size, 
+        #             kernel_initializer='uniform', activation='softmax'))
+        model.add(Dropout(paramsObj.dropout_rate))
+        model.add(Dense(config.ClassNum, activation='sigmoid'))
+        adam = Adam(learning_rate=0.0001, decay=1e-5)
         model.compile(loss='binary_crossentropy',optimizer=adam,metrics=['accuracy'])
 
         return model
@@ -348,7 +379,7 @@ class DeepModel:
         #             kernel_initializer='uniform', activation='softmax'))
         model.add(Dropout(paramsObj.dropout_rate))
         model.add(Dense(config.ClassNum, activation='softmax'))
-        adam = Adam(lr=0.0001, decay=1e-5)
+        adam = Adam(learning_rate=0.0001, decay=1e-5)
         model.compile(loss='categorical_crossentropy',optimizer=adam,metrics=['accuracy'])
 
         return model

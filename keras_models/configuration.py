@@ -26,7 +26,7 @@ class Params:
 	# MAX_SEQ_LENGTH = 500
 
 	# variables for optimization
-	n_epoch = 50
+	n_epoch = 5
 	batch_size = 32
 	dropout_rate = 0.5
 	dense_layer_size = 256

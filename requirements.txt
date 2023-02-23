@@ -4,4 +4,5 @@ seaborn
 keras_tuner
 tensorflow-datasets
 fasttext
+# https://www.lfd.uci.edu/~gohlke/pythonlibs/#fasttext
 nltk
