@@ -3,3 +3,4 @@
 **/huggingface
 **/__pycache__
 **/test.txt
+**/checkpoint/**

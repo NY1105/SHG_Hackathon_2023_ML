@@ -20,7 +20,7 @@ import matplotlib.pyplot as plt
 from keras.preprocessing.text import Tokenizer
 from keras.callbacks import ModelCheckpoint
 from keras.callbacks import History 
-from sklearn.model_selection import StratifiedKFold
+from sklearn.model_selection import StratifiedKFold, KFold
 from sklearn.metrics import classification_report,confusion_matrix
 from attention import AttLayer
 import numpy
@@ -32,6 +32,8 @@ import fasttext
 from nltk.corpus import stopwords
 from sklearn.metrics import matthews_corrcoef
 from sklearn.metrics import hamming_loss
+from read import read
+import tensorflow as tf
 
 class Preprocessing:
 
@@ -190,14 +192,15 @@ class Preprocessing:
 
     # generater, returns indices for train and test data  
     def cross_validation(self, X, Y, seed):
-        kfold = StratifiedKFold(n_splits=10, shuffle=True, random_state=seed)
-        kfolds = kfold.split(self.X, self.Y)
+        # kfold = StratifiedKFold(n_splits=10, shuffle=True, random_state=seed)
+        kfold = KFold(n_splits=10, shuffle=True, random_state=seed)
+        kfolds = kfold.split(X, Y)
         return kfolds       
 
 
 
 # need to update its attribute handling 
-def train_cross_validation(attribute, ModelName):
+def train_cross_validation(attribute, ModelName=None):
 
     # preprocess set up
     preprocessObj = Preprocessing()
@@ -227,7 +230,8 @@ def train_cross_validation(attribute, ModelName):
         # filepath="weights.best.hdf5"
         # checkpoint = ModelCheckpoint(filepath, monitor='val_accuracy', verbose=1, save_best_only=True, mode='max')
         history = History()
-        callbacks_list = [history]
+        earlystop = tf.keras.callbacks.EarlyStopping(monitor='loss', patience=4)
+        callbacks_list = [history,earlystop]
 
         # fit the model
         model.fit(preprocessObj.X[train], preprocessObj.onehot_Y[train], 
@@ -260,7 +264,7 @@ def train_cross_validation(attribute, ModelName):
 
 
 # 'attribute' can be single attribute or a list of attributes; multilabeling only used by splitting validation
-def train_splitting(attribute, ModelName):
+def train_splitting(attribute, ModelName=None):
 
     # preprocess set up
     preprocessObj = Preprocessing()
@@ -284,7 +288,7 @@ def train_splitting(attribute, ModelName):
 
     # save the best model & history
     filepath="./checkpoint/{}_weights.hdf5".format(preprocessObj.attribute)
-    checkpoint = ModelCheckpoint(filepath, monitor='val_accuracyuracy', verbose=1, save_best_only=False, mode='max')
+    checkpoint = ModelCheckpoint(filepath, monitor='val_accuracy', verbose=1, save_best_only=True, mode='max')
     # checkpoint = ModelCheckpoint(filepath, monitor='val_loss', verbose=1, save_best_only=True, mode='max')
     history = History()
     callbacks_list = [history, checkpoint]
@@ -343,20 +347,42 @@ def train_splitting(attribute, ModelName):
 
         # evaluate best model
         scores = best_model.evaluate(preprocessObj.X[test],preprocessObj.onehot_Y[test],verbose=2)
-        print("Test: {} {}".format(model.metrics,scores))
+        print("Test: {} loss:{} acc:{}".format(best_model.metrics,scores[0],scores[1]))
 
-        outName = preprocessObj.attribute+".res"
+        outName = "./res/"+preprocessObj.attribute+".res"
         with open(outName, 'w') as out:
             out.write(preprocessObj.attribute)
             out.write("\n")
             out.write('Test accuracy: {}'.format(scores[1]))
+            out.write("\n")
 
 
+def pure_test(attribute, ModelName=None):
+    preprocessObj = Preprocessing()
+    paramsObj = config.Params()
+    preprocessObj.load_data(attribute)
+    preprocessObj.load_fasttext(paramsObj.use_word_embedding)
 
+    # get train, dev and test narrays
+    df = pd.read_csv(config.FILENAME)
+    dev = df[:100].index.tolist()
+    filepath="./checkpoint/{}_weights.hdf5".format(preprocessObj.attribute)
+    model = load_model(filepath)
+    out = model.predict(preprocessObj.X[dev])
+    out = np.array(out)
+    def check(xl):
+        correct = 0
+        total = len(xl)
+        for i,x in enumerate(xl):
+            if int(x[0])==preprocessObj.onehot_Y[dev][i][0]:
+                correct+=1
+        return correct/total
+    print(check(out))
+    
 def main():
     # dims = ['cAGR', 'cCON', 'cEXT', 'cNEU', 'cOPN']
     # validation
-    validation_methods = [train_splitting, train_cross_validation]
+    validation_methods = [train_splitting, train_cross_validation, pure_test]
     validation_func = validation_methods[config.validation_mode]
 
     # model 
@@ -370,7 +396,7 @@ def main():
         dims = config.dims
         for dim in dims:
             validation_func(dim, ModelName)
-
+    read()
 
 
 if __name__ == "__main__":

@@ -4,18 +4,18 @@ FILENAME = './data/Essays/essays2007.csv' # essays dataset
 PATH_EMBEDDING = '../fast-text/corpus.friends+nyt+wiki+amazon.fasttext.skip.d100.bin'
 dims = ['cAGR', 'cCON', 'cEXT', 'cOPN', 'cNEU']
 column_to_read = ['text', 'single_text'][0]
-validation_mode = [0,1][0] # 0 for splitting; 1 for 10-fold CV
-multilabel = True # False means multi class
+validation_mode = [0,1,2][1] # 0 for splitting; 1 for 10-fold CV; 2 for pure testing
+multilabel = validation_mode != 0 # False means multi class
 ''' 
 models = MLP, textCNN, CNN, BLSTM, ABLSTM, ABCNN
 '''
-ModelName = 'BLSTM'
+ModelName = 'BLSTM2'
 
 MAX_NUM_WORDS = 10000 # truncated vocab_size
 MAX_SEQ_LENGTH = 400 
 MAX_SENTS = 30
 EMBEDDING_DIM = 100
-ClassNum = 5
+ClassNum = 5 if multilabel else 2
 
 
 class Params:
@@ -26,7 +26,7 @@ class Params:
 	# MAX_SEQ_LENGTH = 500
 
 	# variables for optimization
-	n_epoch = 5
+	n_epoch = 10
 	batch_size = 32
 	dropout_rate = 0.5
 	dense_layer_size = 256

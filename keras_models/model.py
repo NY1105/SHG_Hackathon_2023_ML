@@ -11,7 +11,7 @@ from keras.callbacks import ModelCheckpoint
 from keras.optimizers import SGD, Adam
 from collections import Counter
 import configuration as config
-from keras.layers import Input, BatchNormalization
+from keras.layers import Input, BatchNormalization, GlobalMaxPooling1D
 
 from attention import AttLayer
 
@@ -74,7 +74,7 @@ class DeepModel:
 
         model.compile(loss='categorical_crossentropy',
               optimizer='rmsprop',
-              metrics=['acc'])
+              metrics=['accuracy'])
 
         return model
 
@@ -340,17 +340,17 @@ class DeepModel:
                 input_length=config.MAX_SEQ_LENGTH,
                 trainable=paramsObj.train_embedding))
 
-        # model.add(Bidirectional(LSTM(64,return_sequences=True),merge_mode=paramsObj.merge_mode))
-        # model.add(Dropout(paramsObj.dropout_rate))
-        # model.add(Bidirectional(LSTM(128,return_sequences=True),merge_mode=paramsObj.merge_mode))
-        # model.add(Dropout(paramsObj.dropout_rate))
-        model.add(Bidirectional(LSTM(128)))
-        # model.add(Dense(paramsObj.dense_layer_size, 
-        #             kernel_initializer='uniform', activation='softmax'))
+    
+        model.add(Bidirectional(LSTM(256)))
+        model.add(Bidirectional(LSTM(256)))
+        model.add(BatchNormalization())
+        model.add(GlobalMaxPooling1D())
         model.add(Dropout(paramsObj.dropout_rate))
+        model.add(Dense(128))
+        model.add(Dense(64))
         model.add(Dense(config.ClassNum, activation='sigmoid'))
-        adam = Adam(learning_rate=0.0001, decay=1e-5)
-        model.compile(loss='binary_crossentropy',optimizer=adam,metrics=['accuracy'])
+        sgd = SGD(learning_rate=0.01)
+        model.compile(loss='binary_crossentropy',optimizer=sgd,metrics=['accuracy'])
 
         return model
 

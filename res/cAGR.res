@@ -1,0 +1,3 @@
+cAGR
+Test accuracy: 0.5699999928474426cAGR
+Test accuracy: 0.4699999988079071

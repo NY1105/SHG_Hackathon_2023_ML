@@ -1,0 +1,3 @@
+cCON
+Test accuracy: 0.5400000214576721cCON
+Test accuracy: 0.5400000214576721
