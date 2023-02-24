@@ -4,7 +4,7 @@ FILENAME = './data/Essays/essays2007.csv' # essays dataset
 PATH_EMBEDDING = '../fast-text/corpus.friends+nyt+wiki+amazon.fasttext.skip.d100.bin'
 dims = ['cAGR', 'cCON', 'cEXT', 'cOPN', 'cNEU']
 column_to_read = ['text', 'single_text'][0]
-validation_mode = [0,1,2][1] # 0 for splitting; 1 for 10-fold CV; 2 for pure testing
+validation_mode = [0,1,2][0] # 0 for splitting; 1 for 10-fold CV; 2 for pure testing
 multilabel = validation_mode != 0 # False means multi class
 ''' 
 models = MLP, textCNN, CNN, BLSTM, ABLSTM, ABCNN

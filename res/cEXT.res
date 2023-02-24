@@ -1,3 +1,2 @@
 cEXT
-Test accuracy: 0.47999998927116394cEXT
-Test accuracy: 0.5
+Test accuracy: 0.5199999809265137

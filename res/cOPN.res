@@ -1,3 +1,2 @@
 cOPN
-Test accuracy: 0.5299999713897705cOPN
-Test accuracy: 0.5600000023841858
+Test accuracy: 0.6200000047683716

@@ -5,6 +5,7 @@ import re
 import pickle
 
 import keras
+import sklearn
 from keras.layers import Dropout
 from keras.datasets import imdb
 from keras.models import Sequential, load_model
