@@ -194,7 +194,7 @@ class Preprocessing:
     # generater, returns indices for train and test data  
     def cross_validation(self, X, Y, seed):
         # kfold = StratifiedKFold(n_splits=10, shuffle=True, random_state=seed)
-        kfold = KFold(n_splits=10, shuffle=True, random_state=seed)
+        kfold = KFold(n_splits=config.kfolds, shuffle=True, random_state=seed)
         kfolds = kfold.split(X, Y)
         return kfolds       
 
@@ -216,13 +216,12 @@ def train_cross_validation(attribute, ModelName=None):
     cv_acc = []
     cv_records = []
     count_iter = 1
-
+    # filepath = "./checkpoint/{}_weights.hdf5".format(preprocessObj.attribute)
     # loop the kfolds
     for train, test in kfolds:
 
         # create objects for each fold of 10-fold CV
         modelObj = models.DeepModel()
-
         # build the model
         model = modelObj.chooseModel(config.ModelName, paramsObj=paramsObj, weight=preprocessObj.embedding_matrix)
         print(model.summary())
@@ -232,6 +231,7 @@ def train_cross_validation(attribute, ModelName=None):
         # checkpoint = ModelCheckpoint(filepath, monitor='val_accuracy', verbose=1, save_best_only=True, mode='max')
         history = History()
         earlystop = tf.keras.callbacks.EarlyStopping(monitor='loss', patience=4)
+        # checkpoint = ModelCheckpoint(filepath, monitor='val_accuracy', verbose=1, save_best_only=True, mode='max')
         callbacks_list = [history,earlystop]
 
         # fit the model
@@ -243,18 +243,20 @@ def train_cross_validation(attribute, ModelName=None):
                 callbacks=callbacks_list)
 
         # record
-        ct = Counter(preprocessObj.Y)
+        model.save('./checkpoint/{}_model_{}.h5'.format(preprocessObj.attribute,count_iter))
+        # ct = Counter(preprocessObj.Y)
         print("working on =={}==".format(attribute))
         print("----%s: %d----" % (preprocessObj.attribute, count_iter))
         print("----highest evaluation accuracy is %f" % (100*max(history.history['val_accuracy'])))
-        print("----dominant distribution in data is %f" % max([ct[k]*100/float(preprocessObj.Y.shape[0]) for k in ct]))
+        # print("----dominant distribution in data is %f" % max([ct[k]*100/float(preprocessObj.Y.shape[0]) for k in ct]))
         cv_acc.append(max(history.history['val_accuracy']))
         cv_records.append(history.history['val_accuracy'])
         count_iter += 1
     
-    outName = attribute+".res"
+    
+    outName = "./res/"+preprocessObj.attribute+".res"
     with open(outName, 'w') as out:
-        out.write(attribute)
+        out.write(attribute.__repr__())
         out.write("\n")
         for i, score in enumerate(cv_acc):
             out.write(str(i+1) + ': ' + str(score))
@@ -356,6 +358,8 @@ def train_splitting(attribute, ModelName=None):
             out.write("\n")
             out.write('Test accuracy: {}'.format(scores[1]))
             out.write("\n")
+    read()
+    
 
 
 def pure_test(attribute, ModelName=None):
@@ -397,7 +401,6 @@ def main():
         dims = config.dims
         for dim in dims:
             validation_func(dim, ModelName)
-    read()
 
 
 if __name__ == "__main__":

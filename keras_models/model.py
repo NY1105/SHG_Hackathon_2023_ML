@@ -341,8 +341,8 @@ class DeepModel:
                 trainable=paramsObj.train_embedding))
 
     
-        model.add(Bidirectional(LSTM(256)))
-        model.add(Bidirectional(LSTM(256)))
+        model.add(Bidirectional(LSTM(128,return_sequences=True)))
+        model.add(Bidirectional(LSTM(128,return_sequences=True)))
         model.add(BatchNormalization())
         model.add(GlobalMaxPooling1D())
         model.add(Dropout(paramsObj.dropout_rate))
