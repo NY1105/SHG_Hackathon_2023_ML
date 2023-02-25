@@ -31,7 +31,7 @@ def load_model(model_path):
 def preload_model(attributes=['all_attributes'], model_no=1):
     preloaded = []
     for attrbute in attributes:
-        model_path = f'./checkpoint/{attrbute}_model_{model_no}.h5'
+        model_path = f'./checkpoint/{attrbute}_model_{model_no}.tf'
         preloaded.append(load_model(model_path))
     return preloaded
 
@@ -51,7 +51,7 @@ def preprocess(text):
     return prep
 
 
-def predict(model, attrbute='all_attributes', text_no=None, model_no=1):
+def predict(model, text_no=None):
     # model_path = f'./checkpoint/{attrbute}_model_{model_no}.h5'
     # model = load_model(model_path)
     essay = load_text(order_no=text_no)
@@ -64,7 +64,7 @@ def main():
     # attributes = ['all_attributes']
     attributes = ['cAGR', 'cCON', 'cEXT', 'cOPN', 'cNEU']
     votes = [0, 0, 0, 0, 0]
-    A, C, E, O, N = preload_model(attributes=attributes, model_no=1)
+    A, C, E, O, N = preload_model(attributes=attributes, model_no=2)
     # text_number = randint(0, 2468)
     all_res = []
     no_testcases = 2468
@@ -86,7 +86,7 @@ def main():
                 model = O
             elif attr == 'cNEU':
                 model = N
-            res.append(predict(model, attrbute=attr, text_no=text_number, model_no=1))
+            res.append(predict(model, text_no=text_number))
 
         if len(attributes) == 5:
             result = []
@@ -123,5 +123,5 @@ def main():
 
 
 if __name__ == '__main__':
-    for i in range(5):
-        main()
+    # for i in range(5):
+    main()
