@@ -3,6 +3,7 @@ import numpy as np
 import glob
 import os
 import sys
+from os import path
 import tensorflow as tf
 import pandas as pd
 from keras.models import Sequential, load_model
@@ -36,11 +37,14 @@ def train_cross_validation(attribute, ModelName=None):
     # filepath = "./checkpoint/{}_weights.hdf5".format(preprocessObj.attribute)
     # loop the kfolds
     for train, test in kfolds:
-
+        model_path = './checkpoint/{}_model_{}.tf'.format(preprocessObj.attribute, count_iter)
+        if path.exists(model_path):
+            model = load_model(model_path)
         # create objects for each fold of 10-fold CV
-        modelObj = models.DeepModel()
-        # build the model
-        model = modelObj.chooseModel(config.ModelName, paramsObj=paramsObj, weight=preprocessObj.embedding_matrix)
+        else:
+            # build the model
+            modelObj = models.DeepModel()
+            model = modelObj.chooseModel(config.ModelName, paramsObj=paramsObj, weight=preprocessObj.embedding_matrix)
         print(model.summary())
 
         # save the best model & history
@@ -60,7 +64,7 @@ def train_cross_validation(attribute, ModelName=None):
                   callbacks=callbacks_list)
 
         # record
-        model.save('./checkpoint/{}_model_{}.h5'.format(preprocessObj.attribute, count_iter))
+        model.save(model_path)
         # ct = Counter(preprocessObj.Y)
         print("working on =={}==".format(attribute))
         print("----%s: %d----" % (preprocessObj.attribute, count_iter))
@@ -100,13 +104,17 @@ def train_splitting(attribute, ModelName=None):
     # dev = df[df.scene_id.str.split('_').str.get(1).str.contains(r'e2[0-1]')].index.tolist()
     # test = df[df.scene_id.str.split('_').str.get(1).str.contains(r'e2[2-9]')].index.tolist()
 
+    filepath = "./checkpoint/{}_weights.hdf5".format(preprocessObj.attribute)
+
     # X, Y and train, dev, test are all narray
-    modelObj = models.DeepModel()
-    model = modelObj.chooseModel(config.ModelName, paramsObj=paramsObj, weight=preprocessObj.embedding_matrix)
+    if path.exists(filepath):
+        model = load_model(filepath)
+    else:
+        modelObj = models.DeepModel()
+        model = modelObj.chooseModel(config.ModelName, paramsObj=paramsObj, weight=preprocessObj.embedding_matrix)
     print(model.summary())
 
     # save the best model & history
-    filepath = "./checkpoint/{}_weights.hdf5".format(preprocessObj.attribute)
     checkpoint = ModelCheckpoint(filepath, monitor='val_accuracy', verbose=1, save_best_only=True, mode='max')
     # checkpoint = ModelCheckpoint(filepath, monitor='val_loss', verbose=1, save_best_only=True, mode='max')
     history = History()

@@ -67,7 +67,6 @@ def main():
     A, C, E, O, N = preload_model(attributes=attributes, model_no=1)
     # text_number = randint(0, 2468)
     all_res = []
-    all_score = []
     no_testcases = 2468
     no_testcases = 20
     start = randint(0, 2468 - no_testcases)
