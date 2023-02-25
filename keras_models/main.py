@@ -1,11 +1,13 @@
 # this code is authored by by Hang Jiang
 import numpy as np
-import glob, os, sys
+import glob
+import os
+import sys
 import tensorflow as tf
-import pandas as pd 
+import pandas as pd
 from keras.models import Sequential, load_model
 from keras.callbacks import ModelCheckpoint
-from keras.callbacks import History 
+from keras.callbacks import History
 import model as models
 from sklearn.metrics import matthews_corrcoef
 
@@ -15,9 +17,7 @@ from read import read
 from Preprocess import Preprocessing
 
 
-
-
-# need to update its attribute handling 
+# need to update its attribute handling
 def train_cross_validation(attribute, ModelName=None):
 
     # preprocess set up
@@ -28,7 +28,7 @@ def train_cross_validation(attribute, ModelName=None):
 
     # set seed and cross validation (??? the value of seed)
     seed = 7
-    numpy.random.seed(seed)
+    np.random.seed(seed)
     kfolds = preprocessObj.cross_validation(preprocessObj.X, preprocessObj.onehot_Y, seed)
     cv_acc = []
     cv_records = []
@@ -49,34 +49,33 @@ def train_cross_validation(attribute, ModelName=None):
         history = History()
         earlystop = tf.keras.callbacks.EarlyStopping(monitor='loss', patience=4)
         # checkpoint = ModelCheckpoint(filepath, monitor='val_accuracy', verbose=1, save_best_only=True, mode='max')
-        callbacks_list = [history,earlystop]
+        callbacks_list = [history, earlystop]
 
         # fit the model
-        model.fit(preprocessObj.X[train], preprocessObj.onehot_Y[train], 
-                validation_data = (preprocessObj.X[test], preprocessObj.onehot_Y[test]),
-                epochs=paramsObj.n_epoch, 
-                batch_size=paramsObj.batch_size, 
-                verbose=2, 
-                callbacks=callbacks_list)
+        model.fit(preprocessObj.X[train], preprocessObj.onehot_Y[train],
+                  validation_data=(preprocessObj.X[test], preprocessObj.onehot_Y[test]),
+                  epochs=paramsObj.n_epoch,
+                  batch_size=paramsObj.batch_size,
+                  verbose=2,
+                  callbacks=callbacks_list)
 
         # record
-        model.save('./checkpoint/{}_model_{}.h5'.format(preprocessObj.attribute,count_iter))
+        model.save('./checkpoint/{}_model_{}.h5'.format(preprocessObj.attribute, count_iter))
         # ct = Counter(preprocessObj.Y)
         print("working on =={}==".format(attribute))
         print("----%s: %d----" % (preprocessObj.attribute, count_iter))
-        print("----highest evaluation accuracy is %f" % (100*max(history.history['val_accuracy'])))
+        print("----highest evaluation accuracy is %f" % (100 * max(history.history['val_accuracy'])))
         # print("----dominant distribution in data is %f" % max([ct[k]*100/float(preprocessObj.Y.shape[0]) for k in ct]))
         cv_acc.append(max(history.history['val_accuracy']))
         cv_records.append(history.history['val_accuracy'])
         count_iter += 1
-    
-    
-    outName = "./res/"+preprocessObj.attribute+".res"
+
+    outName = "./res/" + preprocessObj.attribute + ".res"
     with open(outName, 'w') as out:
         out.write(attribute.__repr__())
         out.write("\n")
         for i, score in enumerate(cv_acc):
-            out.write(str(i+1) + ': ' + str(score))
+            out.write(str(i + 1) + ': ' + str(score))
             out.write('\n')
         out.write("The Avg is %f" % np.nanmean(cv_acc))
 
@@ -107,7 +106,7 @@ def train_splitting(attribute, ModelName=None):
     print(model.summary())
 
     # save the best model & history
-    filepath="./checkpoint/{}_weights.hdf5".format(preprocessObj.attribute)
+    filepath = "./checkpoint/{}_weights.hdf5".format(preprocessObj.attribute)
     checkpoint = ModelCheckpoint(filepath, monitor='val_accuracy', verbose=1, save_best_only=True, mode='max')
     # checkpoint = ModelCheckpoint(filepath, monitor='val_loss', verbose=1, save_best_only=True, mode='max')
     history = History()
@@ -115,68 +114,66 @@ def train_splitting(attribute, ModelName=None):
 
     # fit the model with training data
     if config.multilabel:
-        model.fit(preprocessObj.X[train], preprocessObj.onehot_Y[train], 
-                # validation_data = (preprocessObj.X[dev], preprocessObj.onehot_Y[dev]),
-                epochs=paramsObj.n_epoch, 
-                batch_size=paramsObj.batch_size, 
-                verbose=2, 
-                callbacks=callbacks_list)
+        model.fit(preprocessObj.X[train], preprocessObj.onehot_Y[train],
+                  # validation_data = (preprocessObj.X[dev], preprocessObj.onehot_Y[dev]),
+                  epochs=paramsObj.n_epoch,
+                  batch_size=paramsObj.batch_size,
+                  verbose=2,
+                  callbacks=callbacks_list)
 
-        dev = np.append(dev,test)
+        dev = np.append(dev, test)
         # predict dev set
         out = model.predict(preprocessObj.X[dev])
         out = np.array(out)
 
         # find the best threshold
-        threshold = np.arange(0.1,0.9,0.1)
+        threshold = np.arange(0.1, 0.9, 0.1)
         acc = []
         accuracies = []
         best_threshold = np.zeros(out.shape[1])
         for i in range(out.shape[1]):
-            y_prob = np.array(out[:,i])
+            y_prob = np.array(out[:, i])
             for j in threshold:
-                y_pred = [1 if prob>=j else 0 for prob in y_prob]
-                acc.append( matthews_corrcoef(preprocessObj.onehot_Y[dev][:,i],y_pred))
-            acc   = np.array(acc)
-            index = np.where(acc==acc.max()) 
-            accuracies.append(acc.max()) 
+                y_pred = [1 if prob >= j else 0 for prob in y_prob]
+                acc.append(matthews_corrcoef(preprocessObj.onehot_Y[dev][:, i], y_pred))
+            acc = np.array(acc)
+            index = np.where(acc == acc.max())
+            accuracies.append(acc.max())
             best_threshold[i] = threshold[index[0][0]]
             acc = []
 
-        y_pred = np.array([[1 if out[i,j]>=best_threshold[j] else 0 for j in range(preprocessObj.onehot_Y[dev].shape[1])] for i in range(len(preprocessObj.onehot_Y[dev]))])
+        y_pred = np.array([[1 if out[i, j] >= best_threshold[j] else 0 for j in range(preprocessObj.onehot_Y[dev].shape[1])] for i in range(len(preprocessObj.onehot_Y[dev]))])
 
         for idx in range(len(y_pred[0])):
-            pred_col = y_pred[:,idx]
-            y_col = preprocessObj.onehot_Y[dev][:,idx]
+            pred_col = y_pred[:, idx]
+            y_col = preprocessObj.onehot_Y[dev][:, idx]
             acc = np.mean(np.equal(y_col, pred_col))
             print("accuracy is {} for {} with threshold {}".format(acc, config.dims[idx], best_threshold[idx]))
-            
 
     else:
-        model.fit(preprocessObj.X[train], preprocessObj.onehot_Y[train], 
-                validation_data = (preprocessObj.X[dev], preprocessObj.onehot_Y[dev]),
-                epochs=paramsObj.n_epoch, 
-                batch_size=paramsObj.batch_size, 
-                verbose=2, 
-                callbacks=callbacks_list)
+        model.fit(preprocessObj.X[train], preprocessObj.onehot_Y[train],
+                  validation_data=(preprocessObj.X[dev], preprocessObj.onehot_Y[dev]),
+                  epochs=paramsObj.n_epoch,
+                  batch_size=paramsObj.batch_size,
+                  verbose=2,
+                  callbacks=callbacks_list)
 
-        print("----highest evaluation accuracy is %f" % (100*max(history.history['val_accuracy'])))
-    
+        print("----highest evaluation accuracy is %f" % (100 * max(history.history['val_accuracy'])))
+
         # choose the best model
         best_model = load_model(filepath, custom_objects={'AttLayer': AttLayer})
 
         # evaluate best model
-        scores = best_model.evaluate(preprocessObj.X[test],preprocessObj.onehot_Y[test],verbose=2)
-        print("Test: {} loss:{} acc:{}".format(best_model.metrics,scores[0],scores[1]))
+        scores = best_model.evaluate(preprocessObj.X[test], preprocessObj.onehot_Y[test], verbose=2)
+        print("Test: {} loss:{} acc:{}".format(best_model.metrics, scores[0], scores[1]))
 
-        outName = "./res/"+preprocessObj.attribute+".res"
+        outName = "./res/" + preprocessObj.attribute + ".res"
         with open(outName, 'w') as out:
             out.write(preprocessObj.attribute)
             out.write("\n")
             out.write('Test accuracy: {}'.format(scores[1]))
             out.write("\n")
     read()
-    
 
 
 def pure_test(attribute, ModelName=None):
@@ -188,26 +185,28 @@ def pure_test(attribute, ModelName=None):
     # get train, dev and test narrays
     df = pd.read_csv(config.FILENAME)
     dev = df[:100].index.tolist()
-    filepath="./checkpoint/{}_weights.hdf5".format(preprocessObj.attribute)
+    filepath = "./checkpoint/{}_weights.hdf5".format(preprocessObj.attribute)
     model = load_model(filepath)
     out = model.predict(preprocessObj.X[dev])
     out = np.array(out)
+
     def check(xl):
         correct = 0
         total = len(xl)
-        for i,x in enumerate(xl):
-            if int(x[0])==preprocessObj.onehot_Y[dev][i][0]:
-                correct+=1
-        return correct/total
+        for i, x in enumerate(xl):
+            if int(x[0]) == preprocessObj.onehot_Y[dev][i][0]:
+                correct += 1
+        return correct / total
     print(check(out))
-    
+
+
 def main():
     # dims = ['cAGR', 'cCON', 'cEXT', 'cNEU', 'cOPN']
     # validation
     validation_methods = [train_splitting, train_cross_validation, pure_test]
     validation_func = validation_methods[config.validation_mode]
 
-    # model 
+    # model
     ModelName = config.ModelName
 
     # choose multiclass or multilabel
@@ -222,5 +221,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-
