@@ -39,13 +39,14 @@ import tensorflow as tf
 class Preprocessing:
 
     # handle attributes and attribute
-    def preprocess(self, docs, labels, attribute):
+    def preprocess(self, docs, labels=None, attribute=None,stats=True):
         # delete '_' because I want name to be concatenated 
         t = Tokenizer(num_words = 20000, filters='!"#$%&()*+,-./:;<=>?@[\\]^`{|}~\t\n')
         t.fit_on_texts(docs)
         encoded_docs = t.texts_to_sequences(docs)
-        print("BEFORE Pruning:")
-        self.get_statistics(encoded_docs, labels, attribute)
+        if stats:
+            print("BEFORE Pruning:")
+            self.get_statistics(encoded_docs, labels, attribute)
         idx2word = {v:k for k,v in t.word_index.items()}
         
         # stopwords 
@@ -90,7 +91,7 @@ class Preprocessing:
         return newLists
 
     # handle single and multiple attributes
-    def get_statistics(self, encoded_docs, Ys, attributes):
+    def get_statistics(self, encoded_docs, Ys=None, attributes=None):
 
         # explore encoded docs: find sequence length distribution
         result = [len(x) for x in encoded_docs]
@@ -115,6 +116,20 @@ class Preprocessing:
         ct = Counter(Y)
         majorityDistribution = max([ct[k]*100/float(Y.shape[0]) for k in ct])
         print("Total majority is {0} for {1}.".format(majorityDistribution, attribute))
+
+    def load_text(self, text):
+        # preprocess data before feeding into tokenizer
+        docs = self.preprocess([text],stats=False)
+
+        # tokenize the data 
+        t = Tokenizer(num_words = config.MAX_NUM_WORDS)
+        t.fit_on_texts(docs)
+        encoded_docs = t.texts_to_sequences(docs)
+        print("Real Vocab Size: %d" % (len(t.word_index)+1))
+        self.word_index = t.word_index
+
+        # perform Bag of Words
+        self.X = pad_sequences(encoded_docs, maxlen=config.MAX_SEQ_LENGTH) # use either a fixed max-length or the real max-length from data
 
 
     def load_data(self, attribute):
