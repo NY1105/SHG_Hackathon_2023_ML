@@ -103,7 +103,7 @@ class Preprocessing:
         t = Tokenizer(num_words=config.MAX_NUM_WORDS)
         t.fit_on_texts(docs)
         encoded_docs = t.texts_to_sequences(docs)
-        print("Real Vocab Size: %d" % (len(t.word_index) + 1))
+        # print("Real Vocab Size: %d" % (len(t.word_index) + 1))
         self.word_index = t.word_index
 
         # perform Bag of Words
