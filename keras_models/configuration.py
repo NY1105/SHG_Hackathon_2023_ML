@@ -5,7 +5,7 @@ PATH_EMBEDDING = '../fast-text/corpus.friends+nyt+wiki+amazon.fasttext.skip.d100
 dims = ['cAGR', 'cCON', 'cEXT', 'cOPN', 'cNEU']
 column_to_read = ['text', 'single_text'][0]
 validation_mode = [0,1,2][1] # 0 for splitting; 1 for 10-fold CV; 2 for pure testing
-multilabel = validation_mode != 0 # False means multi class
+multilabel = False # False means multi class
 ''' 
 models = MLP, textCNN, CNN, BLSTM, ABLSTM, ABCNN
 '''
@@ -16,7 +16,7 @@ MAX_SEQ_LENGTH = 400
 MAX_SENTS = 30
 EMBEDDING_DIM = 100
 ClassNum = 5 if multilabel else 2
-kfolds = 10 # default 10
+kfolds = 2 # default 10
 
 class Params:
 
@@ -26,7 +26,7 @@ class Params:
 	# MAX_SEQ_LENGTH = 500
 
 	# variables for optimization
-	n_epoch = 30 # default 30
+	n_epoch = 2 # default 30
 	batch_size = 32
 	dropout_rate = 0.5
 	dense_layer_size = 256

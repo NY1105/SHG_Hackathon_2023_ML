@@ -348,7 +348,7 @@ class DeepModel:
         model.add(Dropout(paramsObj.dropout_rate))
         model.add(Dense(128))
         model.add(Dense(64))
-        model.add(Dense(config.ClassNum, activation='sigmoid'))
+        model.add(Dense(config.ClassNum, activation='softmax'))
         sgd = SGD(learning_rate=0.01)
         model.compile(loss='binary_crossentropy',optimizer=sgd,metrics=['accuracy'])
 

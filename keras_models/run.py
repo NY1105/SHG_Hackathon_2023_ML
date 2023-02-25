@@ -11,6 +11,10 @@ def load_one_essay(r=randint(0, 2468)):
     essay = df['text'][r]
     return essay
 
+def load_model_all(model_path):
+    model = tf.keras.models.load_model(model_path)
+    return model
+
 def load_model(model_path):
     model = tf.keras.models.load_model(model_path)
     return model
@@ -30,16 +34,23 @@ def preprocess(text):
     prep.load_text(text)
     return prep
 
-def predict(text_no=None,model_no=1):
-
-    model = load_model(f'./checkpoint/all_attributes_model_{model_no}.h5')
+def predict(attrbute='all_attributes',text_no=None,model_no=1):
+    model_path = f'./checkpoint/{attrbute}_model_{model_no}.h5'
+    model = load_model(model_path)
     essay = load_text(order_no=text_no)
     dataObj = preprocess(essay)
-    res = model.predict(dataObj.X)
-    return [res, essay]
+    return model.predict(dataObj.X)
 
 def main():
-    print(predict(text_no=0,model_no=8))
+    # attributes = ['all_attributes']
+    attributes = ['cAGR', 'cCON', 'cEXT', 'cOPN', 'cNEU']
+    text_number = 1
+    res = []
+    for attr in attributes:
+        res.append(predict(attrbute=attr,text_no=text_number,model_no=1))
+
+    print(res)
+    print(load_one_essay(r=text_number))
 
 if __name__ == '__main__':
     main()

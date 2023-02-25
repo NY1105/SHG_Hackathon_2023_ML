@@ -5,4 +5,4 @@
 **/test.txt
 **/checkpoint/**
 **/ipynb_checkpoints
-/res/*.res
+*.res
