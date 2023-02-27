@@ -11,7 +11,7 @@ from keras.utils import pad_sequences
 from nltk.corpus import stopwords
 from collections import Counter
 from sklearn.model_selection import KFold
-import configuration as config
+import keras_models.configuration as config
 
 
 class Preprocessing:

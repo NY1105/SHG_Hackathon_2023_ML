@@ -1,4 +1,4 @@
-from main import Preprocessing
+from .Preprocess import Preprocessing
 from random import randint
 import pandas as pd
 import tensorflow as tf
