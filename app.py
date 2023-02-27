@@ -3,8 +3,7 @@ from pydantic import BaseModel
 import uvicorn
 import glob
 import sys
-sys.path.append('./keras_models/')
-from run import preload_model, preprocess
+from keras_models.run import preload_model, preprocess
 
 class Item(BaseModel):
     text: str
@@ -23,7 +22,7 @@ async def post(item: Item):
 
 
 def run():
-    uvicorn.run(app, host="127.0.0.1", port=8000)
+    uvicorn.run(app)
 
 
 if __name__ == '__main__':

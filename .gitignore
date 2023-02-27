@@ -7,3 +7,5 @@
 **/checkpoint/**
 **/ipynb_checkpoints
 *.res
+*.zip
+**/export
