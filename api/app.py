@@ -18,7 +18,7 @@ async def post(item: Item):
     pObj = preprocess(item.text)
     res = {}
     for i,model in enumerate([A, C, E, O, N]):
-        res[attributes[i]] = int((model.predict(pObj.X, verbose=2)[0][0]))
+        res[attributes[i]] = round(model.predict(pObj.X, verbose=2)[0][0])
     return res
 
 
