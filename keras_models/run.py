@@ -28,7 +28,7 @@ def load_model(model_path):
     return model
 
 
-def preload_model(attributes=['all_attributes'], model_no=1):
+def preload_model(attributes=['cAGR', 'cCON', 'cEXT', 'cOPN', 'cNEU'], model_no=1):
     preloaded = []
     for attrbute in attributes:
         model_path = f'./checkpoint/{attrbute}_model_{model_no}.tf'
