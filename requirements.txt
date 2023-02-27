@@ -3,6 +3,8 @@ scikit-learn
 seaborn
 keras_tuner
 tensorflow-datasets
-fasttext
-# https://www.lfd.uci.edu/~gohlke/pythonlibs/#fasttext
+# fasttext # https://www.lfd.uci.edu/~gohlke/pythonlibs/#fasttext
 nltk
+uvicorn
+fastapi
+pydantic

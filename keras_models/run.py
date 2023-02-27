@@ -28,7 +28,7 @@ def load_model(model_path):
     return model
 
 
-def preload_model(attributes=['all_attributes'], model_no=1):
+def preload_model(attributes=['cAGR', 'cCON', 'cEXT', 'cOPN', 'cNEU'], model_no=1):
     preloaded = []
     for attrbute in attributes:
         model_path = f'./checkpoint/{attrbute}_model_{model_no}.tf'
@@ -70,6 +70,7 @@ def main():
     no_testcases = 2468
     no_testcases = 20
     start = randint(0, 2468 - no_testcases)
+    # start = 0
     text_number_desired = 2
     for text_number in range(start, start + no_testcases):
         if no_testcases == 1:
