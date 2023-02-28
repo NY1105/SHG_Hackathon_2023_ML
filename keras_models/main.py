@@ -65,7 +65,7 @@ def train_cross_validation(attribute, ModelName=None):
                   callbacks=callbacks_list)
 
         # record
-        model.save(model_path)
+        tf.keras.models.save_model(model,model_path)
         # ct = Counter(preprocessObj.Y)
         print("working on =={}==".format(attribute))
         print("----%s: %d----" % (preprocessObj.attribute, count_iter))

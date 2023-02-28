@@ -7,10 +7,10 @@ def load_model_local(model_path):
     model = tf.keras.models.load_model(model_path)
     return model
 
-def preload_model(attributes=['cAGR', 'cCON', 'cEXT', 'cOPN', 'cNEU'], model_no=1):
+def preload_model(attributes=['cAGR', 'cCON', 'cEXT', 'cOPN', 'cNEU'], model_no=1,dir_path='./checkpoint'):
     preloaded = []
     for attrbute in attributes:
-        model_path = f'./checkpoint/{attrbute}_model_{model_no}.tf'
+        model_path = f'{dir_path}/{attrbute}_model_{model_no}.tf'
         preloaded.append(load_model_local(model_path))
     return preloaded
 
@@ -18,8 +18,11 @@ def preprocess(text):
     prep = Preprocessing()
     prep.load_text(text)
     return prep
-# A, C, E, O, N = preload_model(model_no=2)
-model = load_model_local('./checkpoint/cAGR_model_2.tf')
+def predict(model):
+    return model.predict(textObj.X, verbose=2)[0]
+
+A, C, E, O, N = preload_model(model_no=1,dir_path='./checkpoint/90')
+# model = load_model_local('./checkpoint/cAGR_model_1.tf')
 textObj = None
 
 st.title("Text-based Five-Factor Model Personality Prediction with BiLSTM")
@@ -30,11 +33,11 @@ if st.button('Predict') or text:
         st.write(text)
         textObj = preprocess(text)
     st.write('Predicted personality traits:')
-    st.write('A',model.predict(textObj.X,verbose=2))
-    st.write('C',model.predict(textObj.X,verbose=2))
-    st.write('E',model.predict(textObj.X,verbose=2))
-    st.write('O',model.predict(textObj.X,verbose=2))
-    st.write('N',model.predict(textObj.X,verbose=2))
+    st.write('A',predict(A))
+    st.write('C',predict(C))
+    st.write('E',predict(E))
+    st.write('O',predict(O))
+    st.write('N',predict(N))
 
 
 
