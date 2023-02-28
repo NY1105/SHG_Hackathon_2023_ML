@@ -1,7 +1,8 @@
 from .Preprocess import Preprocessing
 from random import randint
 import pandas as pd
-import tensorflow as tf
+# import tensorflow as tf
+import keras
 import glob
 from collections import Counter
 
@@ -19,12 +20,12 @@ def load_one_essay(r):
 
 
 def load_model_all(model_path):
-    model = tf.keras.models.load_model(model_path)
+    model = keras.models.load_model(model_path)
     return model
 
 
 def load_model(model_path):
-    model = tf.keras.models.load_model(model_path)
+    model = keras.models.load_model(model_path)
     return model
 
 

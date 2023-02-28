@@ -4,7 +4,8 @@ import glob
 import os
 import sys
 from os import path
-import tensorflow as tf
+# import tensorflow as 
+import keras
 import pandas as pd
 from keras.models import Sequential, load_model
 from keras.callbacks import ModelCheckpoint
@@ -51,7 +52,7 @@ def train_cross_validation(attribute, ModelName=None):
         # filepath="weights.best.hdf5"
         # checkpoint = ModelCheckpoint(filepath, monitor='val_accuracy', verbose=1, save_best_only=True, mode='max')
         history = History()
-        earlystop = tf.keras.callbacks.EarlyStopping(monitor='loss', patience=4)
+        earlystop = keras.callbacks.EarlyStopping(monitor='loss', patience=4)
         # checkpoint = ModelCheckpoint(filepath, monitor='val_accuracy', verbose=1, save_best_only=True, mode='max')
         callbacks_list = [history, earlystop]
 

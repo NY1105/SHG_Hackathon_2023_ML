@@ -3,4 +3,5 @@ fasttext-wheel # https://www.lfd.uci.edu/~gohlke/pythonlibs/#fasttext
 nltk
 uvicorn
 fastapi
-tensorflow
+keras
+# tensorflow

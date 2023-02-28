@@ -5,7 +5,8 @@ import os
 import sys
 import pickle
 import fasttext
-from tensorflow import keras
+# from tensorflow import keras
+import keras
 from keras.preprocessing.text import Tokenizer
 from keras.utils import pad_sequences
 from nltk.corpus import stopwords
