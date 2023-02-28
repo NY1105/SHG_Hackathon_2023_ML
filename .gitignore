@@ -1,11 +1,9 @@
 **/venv
-**/wslvenv
 **/.vscode
 **/huggingface
 **/__pycache__
 **/test.txt
-**/checkpoint/**
+# **/checkpoint/**
 **/ipynb_checkpoints
 *.res
-*.zip
-**/export
+*.h5
