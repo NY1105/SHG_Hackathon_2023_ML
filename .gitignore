@@ -4,8 +4,9 @@
 **/huggingface
 **/__pycache__
 **/test.txt
-**/checkpoint/**
+# **/checkpoint/**
 **/ipynb_checkpoints
 *.res
+*.h5
 *.zip
 **/export

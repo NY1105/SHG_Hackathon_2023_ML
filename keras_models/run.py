@@ -5,6 +5,7 @@ import pandas as pd
 import keras
 import glob
 from collections import Counter
+import streamlit as st
 
 data_path = './data/Essays/essays2007.csv'
 df = pd.read_csv(data_path)
@@ -18,7 +19,7 @@ def load_one_essay(r):
     essay = df['text'][r]
     return essay
 
-
+@st.cache
 def load_model_all(model_path):
     model = keras.models.load_model(model_path)
     return model

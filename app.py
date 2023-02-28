@@ -12,6 +12,10 @@ attributes = ['cAGR', 'cCON', 'cEXT', 'cOPN', 'cNEU']
 A, C, E, O, N = preload_model(model_no=2)
 app = FastAPI()
 
+@app.get("/")
+def get():
+    return "POST some text to /"
+    
 @app.post("/")
 async def post(item: Item):
     pObj = preprocess(item.text)
