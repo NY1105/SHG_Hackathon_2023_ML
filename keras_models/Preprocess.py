@@ -9,13 +9,14 @@ import fasttext
 import keras
 from keras.preprocessing.text import Tokenizer
 from keras.utils import pad_sequences
+nltk.download('stopwords')
+
 from nltk.corpus import stopwords
 from collections import Counter
 from sklearn.model_selection import KFold
 import keras_models.configuration as config
 import nltk
 
-nltk.download('stopwords')
 class Preprocessing:
     
     # handle attributes and attribute
