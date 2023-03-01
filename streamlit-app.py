@@ -21,7 +21,7 @@ def preprocess(text):
 def predict(model):
     return model.predict(textObj.X, verbose=2)[0]
 
-A, C, E, O, N = preload_model(model_no=1,dir_path='./checkpoint/90')
+A, C, E, O, N = preload_model(model_no=1,dir_path='./checkpoint')
 # model = load_model_local('./checkpoint/cAGR_model_1.tf')
 textObj = None
 

@@ -12,4 +12,4 @@
 *.hdf5
 *.zip
 **/export
-*.csv
+**/*.csv

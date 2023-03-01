@@ -4,7 +4,7 @@ import glob
 import os
 import sys
 from os import path
-# import tensorflow as 
+import tensorflow as tf
 import keras
 import pandas as pd
 from keras.models import Sequential, load_model
@@ -40,7 +40,7 @@ def train_cross_validation(attribute, ModelName=None):
     for train, test in kfolds:
         model_path = './checkpoint/{}_model_{}.tf'.format(preprocessObj.attribute, count_iter)
         if path.exists(model_path):
-            model = load_model(model_path)
+            model = tf.keras.models.load_model(model_path)
         # create objects for each fold of 10-fold CV
         else:
             # build the model
