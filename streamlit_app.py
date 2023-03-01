@@ -1,6 +1,5 @@
 import streamlit as st
 import tensorflow as tf
-import nltk
 from keras_models.Preprocess import Preprocessing
 # @st.cache_resource
 def load_model_local(model_path):
