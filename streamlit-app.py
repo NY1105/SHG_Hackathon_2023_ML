@@ -19,26 +19,21 @@ def preprocess(text):
     prep.load_text(text)
     return prep
 def predict(model):
-    return model.predict(textObj.X, verbose=2)[0]
+    return round(model.predict(textObj.X, verbose=2)[0][0])
 
 A, C, E, O, N = preload_model(model_no=1,dir_path='./checkpoint')
 # model = load_model_local('./checkpoint/cAGR_model_1.tf')
 textObj = None
 
 st.title("Text-based Five-Factor Model Personality Prediction with BiLSTM")
-st.write("Created by Nicholas Yan for the 2023 Swire Hotel Hackathon")
+st.markdown("Created by [Nicholas Yan](%s) for the 2023 Swire Hotel Hackathon"%'https://nicholasyan.site/')
 text = st.text_area(' ', placeholder='Enter text here to analyze ...')
 if st.button('Predict') or text:
     if not textObj:
-        st.write(text)
         textObj = preprocess(text)
     st.write('Predicted personality traits:')
-    st.write('A',predict(A))
-    st.write('C',predict(C))
-    st.write('E',predict(E))
-    st.write('O',predict(O))
-    st.write('N',predict(N))
-
-
+    result = {'Prediction':{'cAGR':predict(A), 'cCON':predict(C), 'cEXT':predict(E), 'cOPN':predict(O), 'cNEU':predict(N)}}
+    st.table(result)
+    st.write(text)
 
 
