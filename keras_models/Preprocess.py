@@ -9,14 +9,17 @@ import fasttext
 import keras
 from keras.preprocessing.text import Tokenizer
 from keras.utils import pad_sequences
+import nltk
+
+nltk.download('stopwords')
+
 from nltk.corpus import stopwords
 from collections import Counter
 from sklearn.model_selection import KFold
 import keras_models.configuration as config
 
-
 class Preprocessing:
-
+    
     # handle attributes and attribute
     def preprocess(self, docs, labels=None, attribute=None, stats=True):
         # delete '_' because I want name to be concatenated
