@@ -13,3 +13,4 @@
 *.zip
 **/export
 **/*.csv
+**/past
