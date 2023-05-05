@@ -7,16 +7,17 @@ import pickle
 import fasttext
 # from tensorflow import keras
 import keras
-from keras.preprocessing.text import Tokenizer
+from keras.preprocessing.text import Tokenizer 
 from keras.utils import pad_sequences
 import nltk
 
-nltk.download('stopwords')
+# nltk.download('stopwords')
 
 from nltk.corpus import stopwords
 from collections import Counter
 from sklearn.model_selection import KFold
-import keras_models.configuration as config
+import keras_models.configuration as config #
+# import configuration as config #
 
 class Preprocessing:
     
