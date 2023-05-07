@@ -2,9 +2,10 @@ import streamlit as st
 import tensorflow as tf
 from keras_models.Preprocess import Preprocessing
 
-"""To fix `ModuleNotFoundError: No module named 'configuration'`:
- Comment Preprocess:19
- Uncomment Preprocess:20
+"""
+    To fix `ModuleNotFoundError: No module named 'configuration'`:
+    Comment Preprocess:19
+    Uncomment Preprocess:20
 """
 
 # @st.cache_resource
@@ -29,12 +30,12 @@ def preprocess(text):
     return prep
 
 
-def predict(model):
+def model_predict(model):
     return round(model.predict(textObj.X, verbose=2)[0][0])
 
 
-A, C, E, O, N = preload_model(model_no=1, dir_path='./checkpoint')
-# model = load_model_local('./checkpoint/cAGR_model_1.tf')
+# A, C, E, O, N = preload_model(model_no=1, dir_path='./checkpoint')
+model = load_model_local('./checkpoint/cAGR_model_1.tf')
 textObj = None
 
 st.title("Text-based Five-Factor Model Personality Prediction with BiLSTM")
@@ -44,6 +45,7 @@ if st.button('Predict') or text:
     if not textObj:
         textObj = preprocess(text)
     st.write('Predicted personality traits:')
-    result = {'Prediction': {'cAGR': predict(A), 'cCON': predict(C), 'cEXT': predict(E), 'cOPN': predict(O), 'cNEU': predict(N)}}
+    # result = {'Prediction': {'cAGR': model_predict(A), 'cCON': model_predict(C), 'cEXT': model_predict(E), 'cOPN': model_predict(O), 'cNEU': model_predict(N)}}
+    result = {'Prediction': {'cAGR': model_predict(model)}}
     st.table(result)
     st.write(text)

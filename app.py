@@ -3,7 +3,7 @@ from pydantic import BaseModel
 import uvicorn
 import glob
 import sys
-from keras_models.run import preload_model, preprocess
+from run import preload_model, preprocess
 
 class Item(BaseModel):
     text: str

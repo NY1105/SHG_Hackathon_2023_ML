@@ -4,5 +4,5 @@ nltk
 uvicorn
 fastapi
 keras
-tensorflow
 streamlit
+tensorflow#-directml-plugin
