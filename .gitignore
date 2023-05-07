@@ -7,9 +7,6 @@
 # **/checkpoint/**
 **/ipynb_checkpoints
 *.res
-*.hdf5
-*.h5
-*.hdf5
 *.zip
 **/export
 **/*.csv
